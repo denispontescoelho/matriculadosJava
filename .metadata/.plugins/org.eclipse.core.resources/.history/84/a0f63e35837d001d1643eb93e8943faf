@@ -1,0 +1,160 @@
+package matriculados.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import matriculados.model.DAO;
+import matriculados.model.JavaBeans;
+
+/**
+ * Servlet implementation class Controller
+ */
+@WebServlet(urlPatterns = { "/Controller", "/main", "/insert", "/select", "/update", "/delete" })
+public class Controller extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	DAO dao = new DAO();
+	JavaBeans contato = new JavaBeans();
+
+	public Controller() {
+		super();
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String action = request.getServletPath();
+		System.out.println(action);
+		if (action.equals("/main")) {
+			contatos(request, response);
+
+		} else if (action.equals("/insert")) {
+			novoContato(request, response);
+		} else if (action.equals("/select")) {
+			listarContato(request, response);
+		} else if (action.equals("/update")) {
+			editarContato(request, response);
+		} else if (action.equals("/delete")) {
+			removerContato(request, response);
+		} else {
+			response.sendRedirect("index.html");
+		}
+	}
+
+//Listar contatos
+	protected void contatos(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// Criando um objeto que irá receber os dados JavaBeans
+		ArrayList<JavaBeans> lista = dao.listarContatos();
+		// Encaminhar a lista ao documento "Agenda.jsp"
+		request.setAttribute("contatos", lista);
+		RequestDispatcher rd = request.getRequestDispatcher("agenda.jsp");
+		rd.forward(request, response);
+
+		// teste de recebimento
+
+		/*
+		 * for (int i = 0; i < lista.size(); i++) {
+		 * System.out.println(lista.get(i).getIdcon());
+		 * System.out.println(lista.get(i).getNome());
+		 * System.out.println(lista.get(i).getFone());
+		 * System.out.println(lista.get(i).getEmail());
+		 * 
+		 * }
+		 */
+	}
+
+	// Novo Contato
+	protected void novoContato(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		/*
+		 * System.out.println(request.getParameter("nome"));
+		 * System.out.println(request.getParameter("fone"));
+		 * System.out.println(request.getParameter("email"));
+		 */
+
+		// Setar as variáveis JavaBeans
+		contato.setNome(request.getParameter("nome"));
+		contato.setFone(request.getParameter("fone"));
+		contato.setEmail(request.getParameter("email"));
+		// Invocar o método inserrContato passando o objeto contato
+		dao.inserirContato(contato);
+		// redirecionar para a agenda
+		response.sendRedirect("main");
+
+	}
+
+	// Editar Contato
+	protected void listarContato(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// recebimento do id do contato que será editado
+		String idcon = request.getParameter("idcon");
+
+		// teste para veriricar se o servlet está recebendo o id
+		/* System.out.println(idcon); */
+
+		// setar a variável JavaBeans
+		contato.setIdcon(idcon);
+		// Chamar a função de selecionar contato por Id
+		dao.selecionarContato(contato);
+		// testar recebimento
+		/*
+		 * System.out.println(contato.getIdcon());
+		 * System.out.println(contato.getNome()); System.out.println(contato.getFone());
+		 * System.out.println(contato.getEmail());
+		 */
+
+		// Setar os atributos do formulário com o conteudo do JavaBeans
+		request.setAttribute("idcon", contato.getIdcon());
+		request.setAttribute("nome", contato.getNome());
+		request.setAttribute("fone", contato.getFone());
+		request.setAttribute("email", contato.getEmail());
+		// Encaminhar ao documento editar.jsp
+		RequestDispatcher rd = request.getRequestDispatcher("Editar.jsp");
+		rd.forward(request, response);
+
+	}
+
+	// Update de contatos
+	protected void editarContato(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// teste de recebimento
+		/*
+		 * System.out.println(request.getParameter("idcon"));
+		 * System.out.println(request.getParameter("nome"));
+		 * System.out.println(request.getParameter("fone"));
+		 * System.out.println(request.getParameter("email"));
+		 */
+
+		// setar as variávies JavaBeans
+		contato.setIdcon(request.getParameter("idcon"));
+		contato.setNome(request.getParameter("nome"));
+		contato.setFone(request.getParameter("fone"));
+		contato.setEmail(request.getParameter("email"));
+		dao.alterarContato(contato);
+
+		// redirecionar dados alterados para o agenda.jsp
+		response.sendRedirect("main");
+
+	}
+
+	// Remover Contato
+	protected void removerContato(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// teste de recebimento do contato a ser excluido
+		/* System.out.println(request.getParameter("idcon")); */
+
+		// setar a variável idcon na JavaBeans
+		contato.setIdcon(request.getParameter("idcon"));
+		dao.deletarContato(contato);
+		// Redirecionar alterações de delete para o agenda.jsp
+		response.sendRedirect("main");
+
+	}
+}

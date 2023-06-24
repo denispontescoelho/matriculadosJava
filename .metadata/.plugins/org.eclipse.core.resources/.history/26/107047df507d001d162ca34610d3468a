@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Matriculados</title>
+<link rel="icon" href="imagens/matriculados.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<section>
+		<img src="imagens/alunos.png" alt="logo">
+		<h1>Matriculados</h1>
+		<a href="main" class="Botao">Acessar</a>
+
+	</section>
+
+
+</body>
+</html>

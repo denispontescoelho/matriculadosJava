@@ -1,0 +1,28 @@
+package matriculados.model;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class Conexao {
+	// parametros de conexão
+		private String driver = "com.mysql.cj.jdbc.Driver";
+		private String url = "jdbc:mysql://localhost:3306/dbagenda?useTimezone=true&serverTimezone=UTC";
+		private String user = "root";
+		private String password = "dvgp4414";
+
+		// métodos de conexão
+		private Connection conectar() {
+			Connection con = null;
+			try {
+				Class.forName(driver);
+				con = DriverManager.getConnection(url, user, password);
+				return con;
+			} catch (Exception e) {
+				System.out.println(e);
+				return null;
+
+			}
+
+		}
+
+}
